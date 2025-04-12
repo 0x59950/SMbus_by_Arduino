@@ -272,7 +272,16 @@ void parseATCommand(const char* command) {
 
 	char at_cmd[AT_COMMAND_MAX] = {0};
 	char argv[AT_ARGV_COUNT][AT_ARGV_VALUE] = {0};
-	char *argv_p[AT_ARGV_COUNT] = {argv[0], argv[1], argv[2], argv[3], argv[4]};
+	char *argv_p[AT_ARGV_COUNT] = {
+#if AT_ARGV_COUNT > 4
+	argv[0], argv[1], argv[2], argv[3], argv[4]
+#else
+	0
+#endif
+	};
+
+	for(uin8_t i = 0; i < AT_ARGV_COUNT; i++)
+		argv_p[i] = argv[i];
 
 	if(b)
 		memcpy(at_cmd, p, b-p);
