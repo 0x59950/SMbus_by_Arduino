@@ -32,7 +32,7 @@ void u_printf(const char *format, ...)
 * 参数:: head:打印数据前提示; data:要打印的数据; len:数据长度; tail: 打印结束提示
 ********/
 #define LENGTH 16
-void do_print_data_hex(char *head, unsigned char *data, int len, char *tail)
+void do_print_data_hex(const char *head, unsigned char *data, int len, const char *tail)
 {
 	int i;
 	int line;
@@ -280,7 +280,7 @@ void parseATCommand(const char* command) {
 #endif
 	};
 
-	for(uin8_t i = 0; i < AT_ARGV_COUNT; i++)
+	for(uint8_t i = 0; i < AT_ARGV_COUNT; i++)
 		argv_p[i] = argv[i];
 
 	if(b)
