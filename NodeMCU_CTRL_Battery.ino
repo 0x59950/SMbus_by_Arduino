@@ -110,28 +110,34 @@ static int at_read(int argc, char *argv[])
 	do_print_data_hex("READ_ARGV[3]", (uint8_t *)argv[3], strlen(argv[3]), "==== END ====\n");		//len
 
 	int len = atoi(argv[1]);
+	int size = atoi(argv[3]);
 
-	Wire.beginTransmission(atoi(argv[0])); // 向地址x写地址
-	for(int i = 0; i < len; i++)
+	if(len != 0)
 	{
-		int data = char_to_hex(argv[2][i*2], argv[2][i*2+1]);
-		if(data < 0)
-			break;
-		// u_printf("write[%02X]\r\n", data);
-		Wire.write(data);
+		Wire.beginTransmission(atoi(argv[0])); // 向地址x写地址
+		for(int i = 0; i < len; i++)
+		{
+			int data = char_to_hex(argv[2][i*2], argv[2][i*2+1]);
+			if(data < 0)
+				break;
+			// u_printf("write[%02X]\r\n", data);
+			Wire.write(data);
+		}
+		Wire.endTransmission(0);
 	}
-	Wire.endTransmission(0);
 
-	Wire.requestFrom(atoi(argv[0]), atoi(argv[3])); // 向地址x请求n个字节
-	while (Wire.available())
+	if(size != 0)
 	{
-		byte data = Wire.read(); // 读取数据
-		Serial.print(data, HEX);  // 打印十六进制值
-		Serial.print("\n");
-		Serial.print(data, BIN);  // 打印十六进制值
-		Serial.print("\n==========\n");
+		Wire.requestFrom(atoi(argv[0]), size); // 向地址x请求n个字节
+		while (Wire.available())
+		{
+			byte data = Wire.read(); // 读取数据
+			Serial.print(data, HEX);  // 打印十六进制值
+			Serial.print("\n");
+			Serial.print(data, BIN);  // 打印十六进制值
+			Serial.print("\n==========\n");
+		}
 	}
-	// Wire.endTransmission();
 
 	return 0;
 }
@@ -386,7 +392,7 @@ void scan_iic(void)
 	Serial.println("Scanning...");
 
 	nDevices = 0;
-	for (address = 1; address < 127; address++)
+	for (address = 0; address < 127; address++)
 	{
 		Wire.beginTransmission(address);
 		error = Wire.endTransmission();
@@ -417,7 +423,7 @@ void scan_iic(void)
 }
 
 void loop() {
-	if((millis() % (long unsigned int)5000) == 0)
+	if((millis() % (long unsigned int)10000) == 0)
 	{
 		scan_iic();
 	}
